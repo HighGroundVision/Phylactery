@@ -7,8 +7,8 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        var matches = int.Parse(args.ElementAtOrDefault(1) ?? "6");
-        var drafts = int.Parse(args.ElementAtOrDefault(2) ?? "3");
+        var matches = int.Parse(args.ElementAtOrDefault(1) ?? "3");
+        var drafts = int.Parse(args.ElementAtOrDefault(2) ?? "5");
         var browserlessTOKEN = Environment.GetEnvironmentVariable("BROWSERLESS_TOKEN");
         var imgurCLIENTKEY = Environment.GetEnvironmentVariable("IMGUR_CLIENT_KEY");
 
@@ -19,7 +19,7 @@ internal class Program
             var httpClient = new HttpClient();
             var imageEndpoint = new ImageEndpoint(apiClient, httpClient);
 
-            await browser.DefaultContext.OverridePermissionsAsync("https://lotus.highgroundvision.com", new [] { OverridePermission.ClipboardReadWrite });
+            //await browser.DefaultContext.OverridePermissionsAsync("https://lotus.highgroundvision.com", new [] { OverridePermission.ClipboardReadWrite });
 
             var page = await browser.NewPageAsync();
             page.DefaultNavigationTimeout = 0;
@@ -56,6 +56,12 @@ internal class Program
                     var stream = await roasterElement.ScreenshotStreamAsync(new ScreenshotOptions() { Type = ScreenshotType.Png });
                     await roasterElement.DisposeAsync();
 
+                    // TODO: Save Image in folder
+                    using var fs = File.OpenWrite($"./output/Match {m} - Draft {d}.png");
+                    await stream.CopyToAsync(fs);
+
+                    stream.Seek(0, SeekOrigin.Begin);
+
                     // Upload Image
                     var imageUpload = await imageEndpoint.UploadImageAsync(stream);
 
@@ -72,7 +78,7 @@ internal class Program
             }
             await page.DisposeAsync();
 
-            await File.WriteAllTextAsync("lotus.md", markdown.ToString());
+            await File.WriteAllTextAsync("./output/lotus.md", markdown.ToString());
 
             Console.WriteLine("Hello From Phylactery!");
         }
