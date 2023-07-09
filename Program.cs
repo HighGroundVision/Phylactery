@@ -7,8 +7,8 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        var matches = int.Parse(args.ElementAtOrDefault(1) ?? "3");
-        var drafts = int.Parse(args.ElementAtOrDefault(2) ?? "5");
+        var matches = int.Parse(args.ElementAtOrDefault(1) ?? "4");
+        var drafts = int.Parse(args.ElementAtOrDefault(2) ?? "8");
         var browserlessTOKEN = Environment.GetEnvironmentVariable("BROWSERLESS_TOKEN");
         var imgurCLIENTKEY = Environment.GetEnvironmentVariable("IMGUR_CLIENT_KEY");
 
